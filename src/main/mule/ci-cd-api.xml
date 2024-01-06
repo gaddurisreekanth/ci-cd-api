@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2538c071-9d87-4554-9567-73377d2755e5" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="8f2c5b45-2c71-42c4-8836-be454dbb9681" file="myconfig-dev.yaml" />
+	<flow name="ci-cd-apiFlow" doc:id="573f9db1-0ed4-4069-950c-7803ba41f0a3" >
+		<http:listener doc:name="Listener" doc:id="a70837a1-615d-4b23-a820-c9a53abe07b9" config-ref="HTTP_Listener_config" path="/cicd"/>
+		<logger level="INFO" doc:name="Logger" doc:id="da6e4382-7fc8-4f3c-8b8b-7ed653177203" message="---------logger is created -------"/>
+		<ee:transform doc:name="Transform Message" doc:id="43673051-f49e-41c0-8892-a91c4372c10a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": p('log.message')
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="ee18eef5-841d-42bc-8a75-69653437bdff" message="-----sucessfully done-------"/>
+	</flow>
+</mule>
